@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "347664557769",
+    "project_id": "snapmania-6e836",
+    "storage_bucket": "snapmania-6e836.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347664557769:android:0fc765fef7c0014e948f18",
+        "android_client_info": {
+          "package_name": "com.devkm.snapmania"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347664557769-k8a8pgcstvfmlg4b2qmgq8v5lm3uq20q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7YlsYyUF5tix7nHP58Zjx4S1KB2F71U0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347664557769-k8a8pgcstvfmlg4b2qmgq8v5lm3uq20q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
