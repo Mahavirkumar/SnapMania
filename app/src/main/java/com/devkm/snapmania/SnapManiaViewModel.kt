@@ -6,6 +6,7 @@ import com.devkm.snapmania.data.Event
 import com.devkm.snapmania.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
@@ -21,9 +22,18 @@ class SnapManiaViewModel @Inject constructor(
 ) : ViewModel() {
 
     val signedIn = mutableStateOf(false)
-        val inProgress = mutableStateOf(false)
+    val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
+    init {
+//        auth.signOut()
+        val currentUser = firebaseAuth.currentUser
+        signedIn.value = currentUser != null
+        currentUser?.uid?.let { uid ->
+            getUserData(uid)
+        }
+    }
 
 
     fun onSignup(username: String, email: String, pass: String) {
@@ -86,7 +96,7 @@ class SnapManiaViewModel @Inject constructor(
                             }
                     } else {
                         firebaseFirestoreDb.collection(USERS).document(uid).set(userData)
-//                        getUserData(uid)
+                        getUserData(uid)
                         inProgress.value = false
                     }
                 }
@@ -97,7 +107,24 @@ class SnapManiaViewModel @Inject constructor(
         }
     }
 
-    fun handleException(exception: Exception?=null, customMessage: String) {
+    private fun getUserData(uid: String) {
+        inProgress.value = true
+        firebaseFirestoreDb.collection(USERS).document(uid).get()
+            .addOnSuccessListener {
+                val user = it.toObject<UserData>()
+                userData.value = user
+                inProgress.value = false
+//                refreshPosts()
+//                getPersonalizedFeed()
+//                getFollowers(user?.userId)
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Cannot retrieve user data")
+                inProgress.value = false
+            }
+    }
+
+    fun handleException(exception: Exception? = null, customMessage: String) {
         exception?.printStackTrace()
         val errorMsg = exception?.localizedMessage ?: ""
         val message = if (customMessage.isEmpty()) errorMsg else "$customMessage: $errorMsg"

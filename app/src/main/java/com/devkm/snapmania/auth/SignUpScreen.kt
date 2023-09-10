@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
+import com.devkm.snapmania.main.CommonProgressSpinner
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,9 +112,9 @@ fun SignUpScreen(navController: NavController, viewModel: SnapManiaViewModel) {
             )
         }
 
-//        val isLoading = vm.inProgress.value
-//        if (isLoading) {
-//            CommonProgressSpinner()
-//        }
+        val isLoading = viewModel.inProgress.value
+        if (isLoading) {
+            CommonProgressSpinner()
+        }
     }
 }
