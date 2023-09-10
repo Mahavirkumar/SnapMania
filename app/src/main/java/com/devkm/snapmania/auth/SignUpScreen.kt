@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
+import com.devkm.snapmania.main.CheckSignedIn
 import com.devkm.snapmania.main.CommonProgressSpinner
 import com.devkm.snapmania.main.navigateTo
 
@@ -40,7 +41,7 @@ import com.devkm.snapmania.main.navigateTo
 @Composable
 fun SignUpScreen(navController: NavController, viewModel: SnapManiaViewModel) {
 
-// CheckSignedIn(vm = viewModel, navController = navController)
+  CheckSignedIn(viewModel=viewModel,navController=navController)  //auto login feature
 
     val focus = LocalFocusManager.current
 

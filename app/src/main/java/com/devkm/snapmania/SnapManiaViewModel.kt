@@ -27,8 +27,8 @@ class SnapManiaViewModel @Inject constructor(
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
     init {
-//        auth.signOut()
-        val currentUser = firebaseAuth.currentUser
+//        firebaseAuth.signOut()
+        val currentUser = firebaseAuth.currentUser  //help in autologin,and to know user is logined or not
         signedIn.value = currentUser != null
         currentUser?.uid?.let { uid ->
             getUserData(uid)

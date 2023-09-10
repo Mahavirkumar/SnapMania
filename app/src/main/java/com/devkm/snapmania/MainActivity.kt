@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.devkm.snapmania.auth.FeedScreen
 import com.devkm.snapmania.auth.LoginScreen
 import com.devkm.snapmania.auth.SignUpScreen
 import com.devkm.snapmania.main.NotificationMessage
@@ -53,12 +54,16 @@ fun SnapManiaApp() {
         composable(DestinationScreen.Login.route){
             LoginScreen(navController = navController, viewModel = vm)
         }
+        composable(DestinationScreen.Feed.route){
+            FeedScreen(navController=navController, viewModel = vm)
+        }
     }
 }
 
 sealed class DestinationScreen(val route: String) {
     object Signup : DestinationScreen("signup")
     object Login:DestinationScreen("login")
+    object Feed:DestinationScreen("feed")
 }
 
 @Composable
