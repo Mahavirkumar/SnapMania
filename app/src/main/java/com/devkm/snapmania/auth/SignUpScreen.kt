@@ -91,11 +91,11 @@ fun SignUpScreen(navController: NavController, viewModel: SnapManiaViewModel) {
             Button(
                 onClick = {
                     focus.clearFocus(force = true)
-//                    viewModel.onSignup(
-//                        usernameState.value.text,
-//                        emailState.value.text,
-//                        passState.value.text
-//                    )
+                    viewModel.onSignup(
+                        usernameState.value.text,
+                        emailState.value.text,
+                        passState.value.text
+                    )
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
