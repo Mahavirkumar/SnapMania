@@ -82,7 +82,7 @@ fun LoginScreen(navController: NavController,viewModel: SnapManiaViewModel){
             Button(
                 onClick = {
                     focus.clearFocus(force = true)
-//                    viewModel.onLogin(emailState.value.text, passState.value.text)
+                    viewModel.onLogin(emailState.value.text, passState.value.text)
                 },
                 modifier = Modifier.padding(8.dp)
             ) {

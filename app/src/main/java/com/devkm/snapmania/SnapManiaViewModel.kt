@@ -64,6 +64,32 @@ class SnapManiaViewModel @Inject constructor(
             .addOnFailureListener { }
     }
 
+    fun onLogin(email: String, pass: String) {
+        if (email.isEmpty() or pass.isEmpty()) {
+            handleException(customMessage = "Please fill in all fields")
+            return
+        }
+        inProgress.value = true
+        firebaseAuth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    inProgress.value = false
+                    firebaseAuth.currentUser?.uid?.let { uid ->
+                        handleException(customMessage = "Login success")
+                        getUserData(uid)
+                    }
+                } else {
+                    handleException(task.exception, "Login failed")
+                    inProgress.value = false
+                }
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Login failed")
+                inProgress.value = false
+            }
+    }
+
     private fun createOrUpdateProfile(
         name: String? = null,
         username: String? = null,
