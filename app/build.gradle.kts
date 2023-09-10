@@ -81,7 +81,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-beta01")
     implementation("com.google.firebase:firebase-firestore:24.0.0")
     implementation("io.coil-kt:coil-compose:1.3.2")
     implementation("com.google.dagger:hilt-android:2.43.2")
