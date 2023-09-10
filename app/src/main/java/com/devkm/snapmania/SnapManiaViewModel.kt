@@ -3,6 +3,7 @@ package com.devkm.snapmania
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.devkm.snapmania.data.Event
+import com.devkm.snapmania.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -20,7 +21,8 @@ class SnapManiaViewModel @Inject constructor(
 ) : ViewModel() {
 
     val signedIn = mutableStateOf(false)
-    val inProgress = mutableStateOf(false)
+        val inProgress = mutableStateOf(false)
+    val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
 
@@ -41,7 +43,7 @@ class SnapManiaViewModel @Inject constructor(
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 signedIn.value = true
-//                                createOrUpdateProfile(username = username)
+                                createOrUpdateProfile(username = username)
                             } else {
                                 handleException(task.exception, "Signup failed")
                             }
@@ -50,6 +52,49 @@ class SnapManiaViewModel @Inject constructor(
                 }
             }
             .addOnFailureListener { }
+    }
+
+    private fun createOrUpdateProfile(
+        name: String? = null,
+        username: String? = null,
+        bio: String? = null,
+        imageUrl: String? = null
+    ) {
+        val uid = firebaseAuth.currentUser?.uid
+        val userData = UserData(
+            userId = uid,
+            name = name ?: userData.value?.name,
+            userName = username ?: userData.value?.userName,
+            bio = bio ?: userData.value?.bio,
+            imageUrl = imageUrl ?: userData.value?.imageUrl,
+            following = userData.value?.following
+        )
+
+        uid?.let { uid ->
+            inProgress.value = true
+            firebaseFirestoreDb.collection(USERS).document(uid).get()
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        it.reference.update(userData.toMap())
+                            .addOnSuccessListener {
+                                this.userData.value = userData
+                                inProgress.value = false
+                            }
+                            .addOnFailureListener {
+                                handleException(it, "Cannot update user")
+                                inProgress.value = false
+                            }
+                    } else {
+                        firebaseFirestoreDb.collection(USERS).document(uid).set(userData)
+//                        getUserData(uid)
+                        inProgress.value = false
+                    }
+                }
+                .addOnFailureListener { exc ->
+                    handleException(exc, "Cannot create user")
+                    inProgress.value = false
+                }
+        }
     }
 
     fun handleException(exception: Exception?=null, customMessage: String) {
