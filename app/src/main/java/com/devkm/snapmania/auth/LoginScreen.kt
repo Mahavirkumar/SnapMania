@@ -93,7 +93,7 @@ fun LoginScreen(navController: NavController,viewModel: SnapManiaViewModel){
                 Text(text = "LOGIN")
             }
             Text(
-                text = "New here? Go to signup ->",
+                text = "New here? Go to signup",
                 color = Color.Blue,
                 modifier = Modifier
                     .padding(8.dp)
