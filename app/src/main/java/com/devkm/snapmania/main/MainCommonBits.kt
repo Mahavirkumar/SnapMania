@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.SnapManiaViewModel
 @Composable
 fun NotificationMessage(viemodel: SnapManiaViewModel) {
@@ -36,5 +38,15 @@ fun CommonProgressSpinner() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         CircularProgressIndicator()
+    }
+}
+
+fun navigateTo(navController: NavController, dest: DestinationScreen) {
+//    for (param in params) {
+//        navController.currentBackStackEntry?.arguments?.putParcelable(param.name, param.value)
+//    }
+    navController.navigate(dest.route) {
+        popUpTo(dest.route)
+        launchSingleTop = true
     }
 }

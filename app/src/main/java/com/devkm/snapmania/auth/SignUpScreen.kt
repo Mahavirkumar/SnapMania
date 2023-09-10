@@ -33,6 +33,7 @@ import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
 import com.devkm.snapmania.main.CommonProgressSpinner
+import com.devkm.snapmania.main.navigateTo
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,7 +108,7 @@ fun SignUpScreen(navController: NavController, viewModel: SnapManiaViewModel) {
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-//                        navigateTo(navController, DestinationScreen.Login)
+                        navigateTo(navController, DestinationScreen.Login)
                     }
             )
         }
