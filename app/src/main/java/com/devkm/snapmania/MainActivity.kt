@@ -8,11 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.devkm.snapmania.main.FeedScreen
 import com.devkm.snapmania.auth.LoginScreen
+import com.devkm.snapmania.auth.ProfileScreen
 import com.devkm.snapmania.auth.SignUpScreen
 import com.devkm.snapmania.main.MyPostsScreen
 import com.devkm.snapmania.main.NotificationMessage
@@ -59,6 +61,9 @@ fun SnapManiaApp() {
         composable(DestinationScreen.MyPosts.route) {
             MyPostsScreen(navController = navController, viewModel = vm)
         }
+        composable(DestinationScreen.Profile.route){
+            ProfileScreen(navController = navController, viewModel = vm)
+        }
     }
 }
 
@@ -68,6 +73,7 @@ sealed class DestinationScreen(val route: String) {
     object Feed : DestinationScreen("feed")
     object Search : DestinationScreen("search")
     object MyPosts : DestinationScreen("myposts")
+    object Profile:DestinationScreen("profile")
 }
 
 @Composable

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -66,26 +67,26 @@ fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
             }
             Column(modifier = Modifier.padding(8.dp)) {
                 val usernameDisplay =
-                    if (userData?.userName == null) "" else "@${userData?.userName}"
+                    if (userData?.userName == null) "" else "@${userData.userName}"
                 Text(text = userData?.name ?: "", fontWeight = FontWeight.Bold)
                 Text(text = usernameDisplay)
                 Text(text = userData?.bio ?: "")
             }
-//            OutlinedButton(
-//                onClick = { navigateTo(navController, DestinationScreen.Profile) },
-//                modifier = Modifier
-//                    .padding(8.dp)
-//                    .fillMaxWidth(),
-//                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-//                elevation = ButtonDefaults.elevation(
-//                    defaultElevation = 0.dp,
-//                    pressedElevation = 0.dp,
-//                    disabledElevation = 0.dp
-//                ),
-//                shape = RoundedCornerShape(10)
-//            ) {
-//                Text(text = "Edit Profile", color = Color.Black)
-//            }
+            OutlinedButton(
+                onClick = { navigateTo(navController, DestinationScreen.Profile) },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    disabledElevation = 0.dp
+                ),
+                shape = RoundedCornerShape(10)
+            ) {
+                Text(text = "Edit Profile", color = Color.Black)
+            }
 //            PostList(
 //                isContextLoading = isLoading,
 //                postsLoading = postsLoading,
