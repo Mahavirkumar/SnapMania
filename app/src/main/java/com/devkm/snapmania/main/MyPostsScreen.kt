@@ -1,5 +1,8 @@
 package com.devkm.snapmania.main
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,13 +37,24 @@ import com.devkm.snapmania.SnapManiaViewModel
 @Composable
 fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
 
+    val newPostImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ) { uri ->
+        uri.let {
+            val encoded = Uri.encode(uri.toString())
+            val route = DestinationScreen.NewPost.createRoute(encoded)
+            navController.navigate(route)
+        }
+
+    }
+
     val userData = viewModel.userData.value
     val isLoading = viewModel.inProgress.value
     Column {
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 ProfileImage(userData?.imageUrl) {
-//                    newPostImageLauncher.launch("image/*")
+                    newPostImageLauncher.launch("image/*")
                 }
 
                 Text(

@@ -1,5 +1,6 @@
 package com.devkm.snapmania
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import com.devkm.snapmania.auth.LoginScreen
 import com.devkm.snapmania.auth.ProfileScreen
 import com.devkm.snapmania.auth.SignUpScreen
 import com.devkm.snapmania.main.MyPostsScreen
+import com.devkm.snapmania.main.NewPostScreen
 import com.devkm.snapmania.main.NotificationMessage
 import com.devkm.snapmania.main.SearchScreen
 import com.devkm.snapmania.ui.theme.SnapManiaTheme
@@ -61,9 +63,17 @@ fun SnapManiaApp() {
         composable(DestinationScreen.MyPosts.route) {
             MyPostsScreen(navController = navController, viewModel = vm)
         }
-        composable(DestinationScreen.Profile.route){
+        composable(DestinationScreen.Profile.route) {
             ProfileScreen(navController = navController, viewModel = vm)
         }
+        composable(DestinationScreen.NewPost.route) { navbackStackEntry ->
+            val imageUri = navbackStackEntry.arguments?.getString("imageUri")
+            imageUri?.let {
+                NewPostScreen(navController = navController, viewModel = vm, encodedUri = it)
+            }
+
+        }
+
     }
 }
 
@@ -73,7 +83,10 @@ sealed class DestinationScreen(val route: String) {
     object Feed : DestinationScreen("feed")
     object Search : DestinationScreen("search")
     object MyPosts : DestinationScreen("myposts")
-    object Profile:DestinationScreen("profile")
+    object Profile : DestinationScreen("profile")
+    object NewPost : DestinationScreen("newpost/{imageUri}") {
+        fun createRoute(uri: String) = "newpost/$uri"
+    }
 }
 
 @Composable
