@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.devkm.snapmania.data.Event
+import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,6 +16,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 const val USERS = "users"
+const val POSTS = "posts"
 
 @HiltViewModel
 class SnapManiaViewModel @Inject constructor(
@@ -30,7 +32,8 @@ class SnapManiaViewModel @Inject constructor(
 
     init {
 //        firebaseAuth.signOut()
-        val currentUser = firebaseAuth.currentUser  //help in autologin,and to know user is logined or not
+        val currentUser =
+            firebaseAuth.currentUser  //help in autologin,and to know user is logined or not
         signedIn.value = currentUser != null
         currentUser?.uid?.let { uid ->
             getUserData(uid)
@@ -152,7 +155,7 @@ class SnapManiaViewModel @Inject constructor(
             }
     }
 
-    fun handleException(exception: Exception? = null, customMessage: String="") {
+    fun handleException(exception: Exception? = null, customMessage: String = "") {
         exception?.printStackTrace()
         val errorMsg = exception?.localizedMessage ?: ""
         val message = if (customMessage.isEmpty()) errorMsg else "$customMessage: $errorMsg"
@@ -184,15 +187,67 @@ class SnapManiaViewModel @Inject constructor(
                 result?.addOnSuccessListener(onSuccess)
             }
             .addOnFailureListener { exc ->
-                handleException(exception=exc)
+                handleException(exception = exc)
                 inProgress.value = false
             }
     }
+
     fun onLogout() {
         firebaseAuth.signOut()
         signedIn.value = false
         userData.value = null
         popupNotification.value = Event("Logged out")
+    }
+
+    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+        uploadImage(uri) {
+            onCreatePost(it, description, onPostSuccess)
+        }
+    }
+
+    private fun onCreatePost(imageUri: Uri, description: String, onPostSuccess: () -> Unit) {
+        inProgress.value = true
+        val currentUid = firebaseAuth.currentUser?.uid
+        val currentUsername = userData.value?.userName
+        val currentUserImage = userData.value?.imageUrl
+
+        if (currentUid != null) {
+
+            val postUuid = UUID.randomUUID().toString()
+
+//            val fillerWords = listOf("the", "be", "to", "is", "of", "and", "or", "a", "in", "it")
+//            val searchTerms = description
+//                .split(" ", ".", ",", "?", "!", "#")
+//                .map { it.lowercase() }
+//                .filter { it.isNotEmpty() and !fillerWords.contains(it) }
+
+            val post = PostData(
+                postId = postUuid,
+                userId = currentUid,
+                username = currentUsername,
+                userImage = currentUserImage,
+                postImage = imageUri.toString(),
+                postDescription = description,
+                time = System.currentTimeMillis(),
+            )
+
+            firebaseFirestoreDb.collection(POSTS).document(postUuid).set(post)
+                .addOnSuccessListener {
+                    popupNotification.value = Event("Post successfully created")
+                    inProgress.value = false
+//                    refreshPosts()
+                    onPostSuccess.invoke()
+                }
+                .addOnFailureListener { exc ->
+                    handleException(exc, "Unable to create post")
+                    inProgress.value = false
+                }
+
+        } else {
+            handleException(customMessage = "Error: username unavailable. Unable to create post")
+            onLogout()
+            inProgress.value = false
+        }
     }
 
 }

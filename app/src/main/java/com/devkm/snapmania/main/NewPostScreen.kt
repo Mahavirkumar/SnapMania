@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,63 +31,67 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.devkm.snapmania.SnapManiaViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPostScreen(navController: NavController, viewModel: SnapManiaViewModel, encodedUri: String) {
 
-//    val imageUri by remember { mutableStateOf(encodedUri) }
-//    var description by rememberSaveable { mutableStateOf("") }
-//    val scrollState = rememberScrollState()
-//    val focusManager = LocalFocusManager.current
-//
-//    Column(
-//        modifier = Modifier
-//            .verticalScroll(scrollState)
-//            .fillMaxWidth()
-//    ) {
-//
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(8.dp),
-//            horizontalArrangement = Arrangement.SpaceBetween
-//        ) {
-//            Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
-//            Text(text = "Post", modifier = Modifier.clickable {
-//                focusManager.clearFocus()
-//                vm.onNewPost(Uri.parse(imageUri), description) { navController.popBackStack() }
-//            })
-//        }
-//
-//        CommonDivider()
-//
-//        Image(
-//            painter = rememberImagePainter(imageUri),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .defaultMinSize(minHeight = 150.dp),
-//            contentScale = ContentScale.FillWidth
-//        )
-//
-//        Row(modifier = Modifier.padding(16.dp)) {
-//            OutlinedTextField(
-//                value = description,
-//                onValueChange = { description = it },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(150.dp),
-//                label = { Text(text = "Description") },
-//                singleLine = false,
-//                colors = TextFieldDefaults.textFieldColors(
-//                    backgroundColor = Color.Transparent,
-//                    textColor = Color.Black
-//                )
-//            )
-//        }
-//    }
-//
-//    val inProgress = vm.inProgress.value
-//    if (inProgress)
-//        CommonProgressSpinner()
+    val imageUri by remember { mutableStateOf(encodedUri) }
+    var description by rememberSaveable { mutableStateOf("") }
+    val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxWidth()
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
+            Text(text = "Post", modifier = Modifier.clickable {
+                focusManager.clearFocus()
+                viewModel.onNewPost(
+                    Uri.parse(imageUri),
+                    description
+                ) { navController.popBackStack() }
+            })
+        }
+
+        CommonDivider()
+
+        Image(
+            painter = rememberImagePainter(imageUri),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 150.dp),
+            contentScale = ContentScale.FillWidth
+        )
+
+        Row(modifier = Modifier.padding(16.dp)) {
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                label = { Text(text = "Description") },
+                singleLine = false,
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    textColor = Color.Black
+                )
+            )
+        }
+    }
+
+    val inProgress = viewModel.inProgress.value
+    if (inProgress)
+        CommonProgressSpinner()
 
 }
