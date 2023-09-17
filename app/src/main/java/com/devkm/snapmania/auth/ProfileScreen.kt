@@ -63,9 +63,11 @@ fun ProfileScreen(navController: NavController, viewModel: SnapManiaViewModel) {
             onNameChange = { name = it },
             onUsernameChange = { username = it },
             onBioChange = { bio = it },
-            onSave = {viewModel.updateProfileData(name, username, bio)},
+            onSave = { viewModel.updateProfileData(name, username, bio) },
             onBack = { navigateTo(navController = navController, DestinationScreen.MyPosts) },
             onLogout = {
+                viewModel.onLogout()
+                navigateTo(navController, DestinationScreen.Login)
             }
         )
     }
@@ -119,7 +121,7 @@ fun ProfileContent(
             TextField(
                 value = name,
                 onValueChange = onNameChange,
-                colors= TextFieldDefaults.textFieldColors(
+                colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
                     textColor = Color.Black
                 )
@@ -180,7 +182,7 @@ fun ProfileImage(imageUrl: String?, vm: SnapManiaViewModel) {
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) {uri: Uri? ->
+    ) { uri: Uri? ->
         uri?.let { vm.uploadProfileImage(uri) }
     }
 

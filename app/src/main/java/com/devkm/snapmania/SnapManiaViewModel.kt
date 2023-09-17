@@ -188,5 +188,11 @@ class SnapManiaViewModel @Inject constructor(
                 inProgress.value = false
             }
     }
+    fun onLogout() {
+        firebaseAuth.signOut()
+        signedIn.value = false
+        userData.value = null
+        popupNotification.value = Event("Logged out")
+    }
 
 }
