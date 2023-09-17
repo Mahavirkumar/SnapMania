@@ -181,7 +181,7 @@ fun ProfileImage(imageUrl: String?, vm: SnapManiaViewModel) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) {uri: Uri? ->
-//        uri?.let { vm.uploadProfileImage(uri) }
+        uri?.let { vm.uploadProfileImage(uri) }
     }
 
     Box(modifier = Modifier.height(IntrinsicSize.Min)) {
