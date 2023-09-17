@@ -63,7 +63,7 @@ fun ProfileScreen(navController: NavController, viewModel: SnapManiaViewModel) {
             onNameChange = { name = it },
             onUsernameChange = { username = it },
             onBioChange = { bio = it },
-            onSave = { },
+            onSave = {viewModel.updateProfileData(name, username, bio)},
             onBack = { navigateTo(navController = navController, DestinationScreen.MyPosts) },
             onLogout = {
             }
