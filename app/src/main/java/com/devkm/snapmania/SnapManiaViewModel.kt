@@ -36,6 +36,9 @@ class SnapManiaViewModel @Inject constructor(
     val refreshPostsProgress = mutableStateOf(false)
     val posts = mutableStateOf<List<PostData>>(listOf())
 
+    val searchedPosts = mutableStateOf<List<PostData>>(listOf())
+    val searchedPostsProgress = mutableStateOf(false)
+
     init {
 //        firebaseAuth.signOut()
         val currentUser =
@@ -285,5 +288,22 @@ class SnapManiaViewModel @Inject constructor(
         }
         val sortedPosts = newPosts.sortedByDescending { it.time }
         outState.value = sortedPosts
+    }
+
+    fun searchPosts(searchTerm: String) {
+        if (searchTerm.isNotEmpty()) {
+            searchedPostsProgress.value = true
+            firebaseFirestoreDb.collection(POSTS)
+                .whereArrayContains("searchTerms", searchTerm.trim().lowercase())
+                .get()
+                .addOnSuccessListener {
+                    convertPosts(it, searchedPosts)
+                    searchedPostsProgress.value = false
+                }
+                .addOnFailureListener { exc ->
+                    handleException(exc, "Cannot search posts")
+                    searchedPostsProgress.value = false
+                }
+        }
     }
 }

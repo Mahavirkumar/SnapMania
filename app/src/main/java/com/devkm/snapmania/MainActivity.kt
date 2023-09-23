@@ -61,7 +61,7 @@ fun SnapManiaApp() {
             FeedScreen(navController = navController, viewModel = vm)
         }
         composable(DestinationScreen.Search.route) {
-            SearchScreen(navController = navController, viewModel = vm)
+            SearchScreen(navController = navController, vm = vm)
         }
         composable(DestinationScreen.MyPosts.route) {
             MyPostsScreen(navController = navController, viewModel = vm)
