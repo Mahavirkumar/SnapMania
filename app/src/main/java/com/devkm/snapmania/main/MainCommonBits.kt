@@ -1,5 +1,6 @@
 package com.devkm.snapmania.main
 
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -58,13 +60,20 @@ fun CommonProgressSpinner() {
     }
 }
 
-fun navigateTo(navController: NavController, dest: DestinationScreen) {
-//    for (param in params) {
-//        navController.currentBackStackEntry?.arguments?.putParcelable(param.name, param.value)
-//    }
+data class NavParam(
+    val name: String,
+    val value: Parcelable
+)
+
+fun navigateTo(navController: NavController, dest: DestinationScreen,vararg params:NavParam) {
+    for (param in params) {
+        navController.currentBackStackEntry?.arguments?.putParcelable(param.name, param.value)
+    }
     navController.navigate(dest.route) {
-        popUpTo(dest.route)
-        launchSingleTop = true
+        popUpTo(dest.route){
+            inclusive=true
+        }
+        launchSingleTop=true
     }
 }
 

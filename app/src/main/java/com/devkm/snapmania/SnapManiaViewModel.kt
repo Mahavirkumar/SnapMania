@@ -221,11 +221,11 @@ class SnapManiaViewModel @Inject constructor(
 
             val postUuid = UUID.randomUUID().toString()
 
-//            val fillerWords = listOf("the", "be", "to", "is", "of", "and", "or", "a", "in", "it")
-//            val searchTerms = description
-//                .split(" ", ".", ",", "?", "!", "#")
-//                .map { it.lowercase() }
-//                .filter { it.isNotEmpty() and !fillerWords.contains(it) }
+            val fillerWords = listOf("the", "be", "to", "is", "of", "and", "or", "a", "in", "it")
+            val searchTerms = description
+                .split(" ", ".", ",", "?", "!", "#")
+                .map { it.lowercase() }
+                .filter { it.isNotEmpty() and !fillerWords.contains(it) }
 
             val post = PostData(
                 postId = postUuid,
@@ -235,6 +235,7 @@ class SnapManiaViewModel @Inject constructor(
                 postImage = imageUri.toString(),
                 postDescription = description,
                 time = System.currentTimeMillis(),
+                searchTerms = searchTerms
             )
 
             firebaseFirestoreDb.collection(POSTS).document(postUuid).set(post)

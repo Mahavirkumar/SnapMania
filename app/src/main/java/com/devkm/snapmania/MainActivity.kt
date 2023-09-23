@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.os.BundleCompat.getParcelable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
@@ -17,10 +18,12 @@ import com.devkm.snapmania.main.FeedScreen
 import com.devkm.snapmania.auth.LoginScreen
 import com.devkm.snapmania.auth.ProfileScreen
 import com.devkm.snapmania.auth.SignUpScreen
+import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.main.MyPostsScreen
 import com.devkm.snapmania.main.NewPostScreen
 import com.devkm.snapmania.main.NotificationMessage
 import com.devkm.snapmania.main.SearchScreen
+import com.devkm.snapmania.main.SinglePostScreen
 import com.devkm.snapmania.ui.theme.SnapManiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,6 +76,17 @@ fun SnapManiaApp() {
             }
 
         }
+        composable(DestinationScreen.SinglePost.route) {
+            val postData =
+                navController.previousBackStackEntry
+                    ?.arguments?.getParcelable<PostData>("post")
+            postData?.let {
+                SinglePostScreen(
+                    navController = navController,
+                    vm = vm, post = postData
+                )
+            }
+        }
 
     }
 }
@@ -87,6 +101,8 @@ sealed class DestinationScreen(val route: String) {
     object NewPost : DestinationScreen("newpost/{imageUri}") {
         fun createRoute(uri: String) = "newpost/$uri"
     }
+
+    object SinglePost : DestinationScreen("singlepost")
 }
 
 @Composable

@@ -138,11 +138,11 @@ fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
                     .padding(1.dp)
                     .fillMaxSize()
             ) { post ->
-//                navigateTo(
-//                    navController = navController,
-//                    DestinationScreen.SinglePost,
-//                    NavParam("post", post)
-//                )
+                navigateTo(
+                    navController = navController,
+                    DestinationScreen.SinglePost,
+                    NavParam("post", post)
+                )
             }
         }
         BottomNavigationMenu(
