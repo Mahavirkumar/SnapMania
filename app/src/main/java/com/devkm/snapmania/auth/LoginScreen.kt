@@ -32,9 +32,9 @@ import androidx.navigation.NavController
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
-import com.devkm.snapmania.main.CheckSignedIn
-import com.devkm.snapmania.main.navigateTo
-import com.devkm.snapmania.main.CommonProgressSpinner
+import com.devkm.snapmania.CheckSignedIn
+import com.devkm.snapmania.navigateTo
+import com.devkm.snapmania.CommonProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

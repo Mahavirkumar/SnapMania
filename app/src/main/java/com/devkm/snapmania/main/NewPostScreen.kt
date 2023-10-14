@@ -29,6 +29,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.devkm.snapmania.CommonDivider
+import com.devkm.snapmania.CommonProgressSpinner
 import com.devkm.snapmania.SnapManiaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

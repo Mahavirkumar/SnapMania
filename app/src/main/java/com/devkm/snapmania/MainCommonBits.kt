@@ -1,4 +1,4 @@
-package com.devkm.snapmania.main
+package com.devkm.snapmania
 
 import android.os.Parcelable
 import android.widget.Toast
@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,9 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import com.devkm.snapmania.DestinationScreen
-import com.devkm.snapmania.R
-import com.devkm.snapmania.SnapManiaViewModel
+import com.devkm.snapmania.data.PostData
+import com.google.firebase.firestore.DocumentReference
 
 @Composable
 fun NotificationMessage(viemodel: SnapManiaViewModel) {
@@ -65,7 +63,7 @@ data class NavParam(
     val value: Parcelable
 )
 
-fun navigateTo(navController: NavController, dest: DestinationScreen,vararg params:NavParam) {
+fun navigateTo(navController: NavController, dest: DestinationScreen,vararg params: NavParam) {
     for (param in params) {
         navController.currentBackStackEntry?.arguments?.putParcelable(param.name, param.value)
     }

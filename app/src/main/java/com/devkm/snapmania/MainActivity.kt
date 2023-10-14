@@ -1,6 +1,5 @@
 package com.devkm.snapmania
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,9 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.os.BundleCompat.getParcelable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,7 +18,6 @@ import com.devkm.snapmania.auth.SignUpScreen
 import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.main.MyPostsScreen
 import com.devkm.snapmania.main.NewPostScreen
-import com.devkm.snapmania.main.NotificationMessage
 import com.devkm.snapmania.main.SearchScreen
 import com.devkm.snapmania.main.SinglePostScreen
 import com.devkm.snapmania.ui.theme.SnapManiaTheme
@@ -83,7 +79,7 @@ fun SnapManiaApp() {
             postData?.let {
                 SinglePostScreen(
                     navController = navController,
-                    vm = vm, post = postData
+                    viewModel = vm, post = postData
                 )
             }
         }

@@ -34,10 +34,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.devkm.snapmania.CommonImage
+import com.devkm.snapmania.CommonProgressSpinner
 import com.devkm.snapmania.DestinationScreen
+import com.devkm.snapmania.NavParam
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
+import com.devkm.snapmania.UserImageCard
 import com.devkm.snapmania.data.PostData
+import com.devkm.snapmania.navigateTo
 
 
 data class PostRow(

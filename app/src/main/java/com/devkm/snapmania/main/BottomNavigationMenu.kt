@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
+import com.devkm.snapmania.navigateTo
 
 enum class BottomNavigationItem(val icon: Int, val navDestination: DestinationScreen) {
     FEED(R.drawable.baseline_home_24, DestinationScreen.Feed),

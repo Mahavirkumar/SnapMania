@@ -8,6 +8,7 @@ import com.devkm.snapmania.data.Event
 import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.data.UserData
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
@@ -178,7 +179,7 @@ class SnapManiaViewModel @Inject constructor(
     fun uploadProfileImage(uri: Uri) {
         uploadImage(uri) {
             createOrUpdateProfile(imageUrl = it.toString())
-//            updatePostUserImageData(it.toString())
+            updatePostUserImageData(it.toString())
         }
     }
 
@@ -306,4 +307,29 @@ class SnapManiaViewModel @Inject constructor(
                 }
         }
     }
+    private fun updatePostUserImageData(imageUrl: String) {
+        val currentuUid = firebaseAuth.currentUser?.uid
+        firebaseFirestoreDb.collection(POSTS).whereEqualTo("userId", currentuUid) .get()
+            .addOnSuccessListener {
+                val posts = mutableStateOf<List<PostData>>(arrayListOf())
+                convertPosts(it, posts)
+                val refs = arrayListOf<DocumentReference>()
+                for (post in posts.value) {
+                    post.postId?.let { id ->
+                        refs.add(firebaseFirestoreDb.collection(POSTS).document(id))
+                    }
+                }
+                if (refs.isNotEmpty()) {
+                    firebaseFirestoreDb.runBatch { batch ->
+                        for (ref in refs) {
+                            batch.update(ref, "userImage", imageUrl)
+                        }
+                    }
+                        .addOnSuccessListener {
+                            refreshPosts()
+                        }
+                }
+            }
+    }
 }
+

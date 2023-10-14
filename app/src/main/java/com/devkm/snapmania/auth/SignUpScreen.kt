@@ -1,6 +1,5 @@
 package com.devkm.snapmania.auth
 
-import android.graphics.fonts.FontFamily
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,9 +31,9 @@ import androidx.navigation.NavController
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
-import com.devkm.snapmania.main.CheckSignedIn
-import com.devkm.snapmania.main.CommonProgressSpinner
-import com.devkm.snapmania.main.navigateTo
+import com.devkm.snapmania.CheckSignedIn
+import com.devkm.snapmania.CommonProgressSpinner
+import com.devkm.snapmania.navigateTo
 
 
 @OptIn(ExperimentalMaterial3Api::class)
