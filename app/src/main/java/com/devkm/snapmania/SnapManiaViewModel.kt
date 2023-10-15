@@ -1,8 +1,11 @@
 package com.devkm.snapmania
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.devkm.snapmania.data.Event
 import com.devkm.snapmania.data.PostData
@@ -244,6 +247,7 @@ class SnapManiaViewModel @Inject constructor(
                 postImage = imageUri.toString(),
                 postDescription = description,
                 time = System.currentTimeMillis(),
+                likes = listOf<String>(),
                 searchTerms = searchTerms
             )
 
@@ -393,6 +397,30 @@ class SnapManiaViewModel @Inject constructor(
                 handleException(exc, "Cannot get feed")
                 postsFeedProgress.value = false
             }
+    }
+
+    //updating like data on backend(firebase)
+    fun onLikePost(postData: PostData) {
+        firebaseAuth.currentUser?.uid?.let { userId ->
+            postData.likes?.let { likes ->
+                val newLikes = arrayListOf<String>()
+                if (likes.contains(userId)) {
+                    newLikes.addAll(likes.filter { userId != it })
+                } else {
+                    newLikes.addAll(likes)
+                    newLikes.add(userId)
+                }
+                postData.postId?.let { postId ->
+                    firebaseFirestoreDb.collection(POSTS).document(postId).update("likes", newLikes)
+                        .addOnSuccessListener {
+                            postData.likes = newLikes
+                        }
+                        .addOnFailureListener {
+                            handleException(it, "Unable to like post")
+                        }
+                }
+            }
+        }
     }
 }
 

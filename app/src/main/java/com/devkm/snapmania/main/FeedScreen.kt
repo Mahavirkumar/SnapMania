@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.devkm.snapmania.CommonImage
 import com.devkm.snapmania.CommonProgressSpinner
 import com.devkm.snapmania.DestinationScreen
+import com.devkm.snapmania.LikeAnimation
 import com.devkm.snapmania.NavParam
 import com.devkm.snapmania.SnapManiaViewModel
 import com.devkm.snapmania.UserImageCard
@@ -114,8 +115,8 @@ fun Post(
     onPostClick: () -> Unit
 ) {
 
-//    val likeAnimation = remember { mutableStateOf(false) }
-//    val dislikeAnimation = remember { mutableStateOf(false) }
+    val likeAnimation = remember { mutableStateOf(false) }
+    val dislikeAnimation = remember { mutableStateOf(false) }
 
     Card(
         shape = RoundedCornerShape(corner = CornerSize(4.dp)),
@@ -145,41 +146,41 @@ fun Post(
                 val modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 150.dp)
-//                    .pointerInput(Unit) {
-//                        detectTapGestures(
-//                            onDoubleTap = {
-//                                if (post.likes?.contains(currentUserId) == true) {
-//                                    dislikeAnimation.value = true
-//                                } else {
-//                                    likeAnimation.value = true
-//                                }
-//                                vm.onLikePost(post)
-//                            },
-//                            onTap = {
-//                                onPostClick.invoke()
-//                            }
-//                        )
-//                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onDoubleTap = {
+                                if (post.likes?.contains(currentUserId) == true) {
+                                    dislikeAnimation.value = true
+                                } else {
+                                    likeAnimation.value = true
+                                }
+                                viewModel.onLikePost(post)
+                            },
+                            onTap = {
+                                onPostClick.invoke()
+                            }
+                        )
+                    }
                 CommonImage(
                     data = post.postImage,
                     modifier = modifier,
                     contentScale = ContentScale.FillWidth
                 )
 
-//                if (likeAnimation.value) {
-//                    CoroutineScope(Dispatchers.Main).launch {
-//                        delay(1000L)
-//                        likeAnimation.value = false
-//                    }
-//                    LikeAnimation()
-//                }
-//                if (dislikeAnimation.value) {
-//                    CoroutineScope(Dispatchers.Main).launch {
-//                        delay(1000L)
-//                        dislikeAnimation.value = false
-//                    }
-//                    LikeAnimation(false)
-//                }
+                if (likeAnimation.value) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000L)
+                        likeAnimation.value = false
+                    }
+                    LikeAnimation()
+                }
+                if (dislikeAnimation.value) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000L)
+                        dislikeAnimation.value = false
+                    }
+                    LikeAnimation(false)
+                }
             }
         }
     }
