@@ -207,6 +207,7 @@ class SnapManiaViewModel @Inject constructor(
         signedIn.value = false
         userData.value = null
         popupNotification.value = Event("Logged out")
+        searchedPosts.value = listOf()
     }
 
     fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
@@ -307,9 +308,10 @@ class SnapManiaViewModel @Inject constructor(
                 }
         }
     }
+
     private fun updatePostUserImageData(imageUrl: String) {
         val currentuUid = firebaseAuth.currentUser?.uid
-        firebaseFirestoreDb.collection(POSTS).whereEqualTo("userId", currentuUid) .get()
+        firebaseFirestoreDb.collection(POSTS).whereEqualTo("userId", currentuUid).get()
             .addOnSuccessListener {
                 val posts = mutableStateOf<List<PostData>>(arrayListOf())
                 convertPosts(it, posts)
@@ -330,6 +332,24 @@ class SnapManiaViewModel @Inject constructor(
                         }
                 }
             }
+    }
+
+    fun onFollowClick(userId: String) {
+        firebaseAuth.currentUser?.uid?.let { currentUser ->
+            val following = arrayListOf<String>()
+            userData.value?.following?.let {
+                following.addAll(it)
+            }
+            if (following.contains(userId)) {
+                following.remove(userId)
+            } else {
+                following.add(userId)
+            }
+            firebaseFirestoreDb.collection(USERS).document(currentUser).update("following", following)
+                .addOnSuccessListener {
+                    getUserData(currentUser)
+                }
+        }
     }
 }
 
