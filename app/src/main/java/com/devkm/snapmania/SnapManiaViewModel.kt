@@ -37,6 +37,9 @@ class SnapManiaViewModel @Inject constructor(
     val refreshPostsProgress = mutableStateOf(false)
     val posts = mutableStateOf<List<PostData>>(listOf())
 
+    val postsFeed = mutableStateOf<List<PostData>>(listOf())
+    val postsFeedProgress = mutableStateOf(false)
+
     val searchedPosts = mutableStateOf<List<PostData>>(listOf())
     val searchedPostsProgress = mutableStateOf(false)
 
@@ -156,7 +159,7 @@ class SnapManiaViewModel @Inject constructor(
                 userData.value = user
                 inProgress.value = false
                 refreshPosts()
-//                getPersonalizedFeed()
+                getPersonalizedFeed()
 //                getFollowers(user?.userId)
             }
             .addOnFailureListener { exc ->
@@ -208,6 +211,7 @@ class SnapManiaViewModel @Inject constructor(
         userData.value = null
         popupNotification.value = Event("Logged out")
         searchedPosts.value = listOf()
+        postsFeed.value= listOf()
     }
 
     fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
@@ -350,6 +354,45 @@ class SnapManiaViewModel @Inject constructor(
                     getUserData(currentUser)
                 }
         }
+    }
+
+    private fun getPersonalizedFeed() {
+        val following = userData.value?.following
+        if (!following.isNullOrEmpty()) {
+            postsFeedProgress.value = true
+            firebaseFirestoreDb.collection(POSTS).whereIn("userId", following).get()
+                .addOnSuccessListener {
+                    convertPosts(documents = it, outState = postsFeed)
+                    if (postsFeed.value.isEmpty()) {
+                        getGeneralFeed()
+                    } else {
+                        postsFeedProgress.value = false
+                    }
+                }
+                .addOnFailureListener { exc ->
+                    handleException(exc, "Cannot get personalized feed")
+                    postsFeedProgress.value = false
+                }
+        } else {
+            getGeneralFeed()
+        }
+    }
+
+    private fun getGeneralFeed() {
+        postsFeedProgress.value = true
+        val currentTime = System.currentTimeMillis()
+        val difference = 24 * 60 * 60 * 1000 // 1 day in millis
+        firebaseFirestoreDb.collection(POSTS)
+            .whereGreaterThan("time", currentTime - difference)
+            .get()
+            .addOnSuccessListener {
+                convertPosts(documents = it, outState = postsFeed)
+                postsFeedProgress.value = false
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Cannot get feed")
+                postsFeedProgress.value = false
+            }
     }
 }
 
