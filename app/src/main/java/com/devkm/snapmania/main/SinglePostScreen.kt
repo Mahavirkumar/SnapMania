@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.devkm.snapmania.CommonDivider
 import com.devkm.snapmania.CommonImage
+import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.R
 import com.devkm.snapmania.SnapManiaViewModel
 import com.devkm.snapmania.data.PostData
@@ -39,11 +41,11 @@ import com.devkm.snapmania.data.PostData
 @Composable
 fun SinglePostScreen(navController: NavController, viewModel: SnapManiaViewModel, post: PostData) {
 
-//    val comments = vm.comments.value
-//
-//    LaunchedEffect(key1 = Unit) {
-//        vm.getComments(post.postId)
-//    }
+    val comments = viewModel.comments.value
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getComments(post.postId)
+    }
 
 
     post.userId?.let {
@@ -60,8 +62,8 @@ fun SinglePostScreen(navController: NavController, viewModel: SnapManiaViewModel
             SinglePostDisplay(
                 navController = navController,
                 vm = viewModel,
-                post = post
-//                nbComments = comments.size
+                post = post,
+                nbComments = comments.size
             )
         }
     }
@@ -71,8 +73,8 @@ fun SinglePostScreen(navController: NavController, viewModel: SnapManiaViewModel
 fun SinglePostDisplay(
     navController: NavController,
     vm: SnapManiaViewModel,
-    post: PostData
-//    nbComments: Int
+    post: PostData,
+    nbComments: Int
 ) {
     val userData = vm.userData.value
     Box(
@@ -138,15 +140,15 @@ fun SinglePostDisplay(
     }
 
     Row(modifier = Modifier.padding(8.dp)) {
-//        Text(
-//            text = "$nbComments comments",
-//            color = Color.Gray,
-//            modifier = Modifier
-//                .padding(start = 8.dp)
-//                .clickable {
-//                    post.postId?.let {
-//                        navController.navigate(DestinationScreen.CommentsScreen.createRoute(it))
-//                    }
-//                })
+        Text(
+            text = "$nbComments comments",
+            color = Color.Gray,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .clickable {
+                    post.postId?.let {
+                        navController.navigate(DestinationScreen.CommentsScreen.createRoute(it))
+                    }
+                })
     }
 }

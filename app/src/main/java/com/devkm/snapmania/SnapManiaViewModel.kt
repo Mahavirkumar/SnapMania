@@ -7,6 +7,7 @@ import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import com.devkm.snapmania.data.CommentData
 import com.devkm.snapmania.data.Event
 import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.data.UserData
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 const val USERS = "users"
 const val POSTS = "posts"
+const val COMMENTS = "comments"
 
 @HiltViewModel
 class SnapManiaViewModel @Inject constructor(
@@ -45,6 +47,9 @@ class SnapManiaViewModel @Inject constructor(
 
     val searchedPosts = mutableStateOf<List<PostData>>(listOf())
     val searchedPostsProgress = mutableStateOf(false)
+
+    val comments = mutableStateOf<List<CommentData>>(listOf())
+    val commentsProgress = mutableStateOf(false)
 
     init {
 //        firebaseAuth.signOut()
@@ -214,7 +219,7 @@ class SnapManiaViewModel @Inject constructor(
         userData.value = null
         popupNotification.value = Event("Logged out")
         searchedPosts.value = listOf()
-        postsFeed.value= listOf()
+        postsFeed.value = listOf()
     }
 
     fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
@@ -353,7 +358,8 @@ class SnapManiaViewModel @Inject constructor(
             } else {
                 following.add(userId)
             }
-            firebaseFirestoreDb.collection(USERS).document(currentUser).update("following", following)
+            firebaseFirestoreDb.collection(USERS).document(currentUser)
+                .update("following", following)
                 .addOnSuccessListener {
                     getUserData(currentUser)
                 }
@@ -421,6 +427,45 @@ class SnapManiaViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun createComment(postId: String?, text: String) {
+        userData.value?.userName?.let { username ->
+            val commentId = UUID.randomUUID().toString()
+            val comment = CommentData(
+                commentId = commentId,
+                postId = postId,
+                username = username,
+                text = text,
+                timestamp = System.currentTimeMillis()
+            )
+            firebaseFirestoreDb.collection(COMMENTS).document(commentId).set(comment)
+                .addOnSuccessListener {
+                    getComments(postId)
+                }
+                .addOnFailureListener { exc ->
+                    handleException(exc, "Cannot create comment.")
+                }
+        }
+    }
+
+    fun getComments(postId: String?) {
+        commentsProgress.value = true
+        firebaseFirestoreDb.collection(COMMENTS).whereEqualTo("postId", postId).get()
+            .addOnSuccessListener { documents ->
+                val newComments = mutableListOf<CommentData>()
+                documents.forEach { doc ->
+                    val comment = doc.toObject<CommentData>()
+                    newComments.add(comment)
+                }
+                val sortedComments = newComments.sortedByDescending { it.timestamp }
+                comments.value = sortedComments
+                commentsProgress.value = false
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Cannot retrieve comments")
+                commentsProgress.value = false
+            }
     }
 }
 
