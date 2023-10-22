@@ -82,7 +82,7 @@ fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
 
     val postsLoading = viewModel.refreshPostsProgress.value
     val posts = viewModel.posts.value
-//    val followers = viewModel.followers.value
+    val followers = viewModel.followers.value
 
     Column {
         Column(modifier = Modifier.weight(1f)) {
@@ -99,7 +99,7 @@ fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "$0\nfollowers",
+                    text = "${followers}\nfollowers",
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),

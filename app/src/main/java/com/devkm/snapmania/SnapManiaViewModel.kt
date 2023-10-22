@@ -51,6 +51,8 @@ class SnapManiaViewModel @Inject constructor(
     val comments = mutableStateOf<List<CommentData>>(listOf())
     val commentsProgress = mutableStateOf(false)
 
+    val followers = mutableStateOf(0)
+
     init {
 //        firebaseAuth.signOut()
         val currentUser =
@@ -168,7 +170,7 @@ class SnapManiaViewModel @Inject constructor(
                 inProgress.value = false
                 refreshPosts()
                 getPersonalizedFeed()
-//                getFollowers(user?.userId)
+                getFollowers(user?.userId)
             }
             .addOnFailureListener { exc ->
                 handleException(exc, "Cannot retrieve user data")
@@ -465,6 +467,13 @@ class SnapManiaViewModel @Inject constructor(
             .addOnFailureListener { exc ->
                 handleException(exc, "Cannot retrieve comments")
                 commentsProgress.value = false
+            }
+    }
+
+    private fun getFollowers(uid: String?) {
+        firebaseFirestoreDb.collection(USERS).whereArrayContains("following", uid?:"").get()
+            .addOnSuccessListener { documents ->
+                followers.value = documents.size()
             }
     }
 }
