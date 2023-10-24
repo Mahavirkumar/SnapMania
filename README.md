@@ -2,6 +2,28 @@
 
 SnapMania is a cutting-edge application that incorporates features similar to Instagram. It leverages cutting-edge technologies such as Jetpack Compose, MVVM architecture, Firebase for backend services, and Hilt for dependency injection.
 
+# App Screen Shots
+<p float="left">
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/73e586f5-45c5-43f1-b2d2-b12e658fe6ad" width="200" />
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/d6ff229a-c373-4072-a32f-2b46f103c544" width="200" /> 
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/f6538c8d-ae37-423d-bb65-3a2de1c8d6f2)" width="200" />
+</p>
+
+
+<p float="left">
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/297d310f-ee91-4994-9543-01e4e1b1178c" width="200" />
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/5e7bf130-dd09-48ba-8286-f149881ee352" width="200" /> 
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/d00f9601-c9a9-41e6-845a-9777a4429c11](https://github.com/Mahavirkumar/SnapMania/assets/42721155/e665e343-0a8b-4633-9a04-378d2776fb62))" width="200" />
+</p>
+
+<p float="left">
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/8bfa270a-19cb-4fdb-939f-7ece943d6866" width="200" />
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/abce4cbe-aa73-4c9d-bbba-86236fabaaa4" width="200" /> 
+  <img src="https://github.com/Mahavirkumar/SnapMania/assets/42721155/3250030e-efc1-4018-9699-05c2c30daaa7" width="200" />
+</p>
+
+
+
 ## Features
 
 - User Signup/Signin Functionality:
