@@ -26,9 +26,11 @@ SnapMania is a cutting-edge application that incorporates features similar to In
 
 - Search Option:
   - Users can search for specific posts or users to discover new content.
-
-- Emojis:
-  - Emojis can be used throughout the application to enhance user interactions and expressions.
+    
+- Creating Posts:
+  - Users can create and share posts, allowing them to express their creativity and share their experiences with the community.
+Follow/Unfollow Users:
+  - Users have the ability to follow and unfollow other users, establishing and managing connections within the platform.
 
 ## Technologies Used
 
@@ -36,6 +38,10 @@ SnapMania is a cutting-edge application that incorporates features similar to In
 - MVVM Architecture: A software architectural pattern that separates the user interface from the business logic, promoting maintainability and testability.
 - Firebase: A comprehensive development platform that provides backend services such as authentication, storage, and database.
 - Hilt: A dependency injection library for Android that simplifies the process of injecting dependencies into your app, making it more modular and scalable.
+- Jetpack Navigation: Simplifies app navigation by providing a robust set of tools for in-app navigation, ensuring a smooth and intuitive user experience while moving within the application.
+- Coil: An image-loading library offering efficient and flexible image-loading capabilities, improving performance and responsiveness in image-heavy applications.
+- Coroutines: Kotlin coroutines are utilized for asynchronous programming, enhancing app responsiveness and overall performance.
+ 
 
 ## Getting Started
 
