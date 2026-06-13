@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,15 +34,11 @@ import com.devkm.snapmania.CommonImage
 import com.devkm.snapmania.CommonProgressSpinner
 import com.devkm.snapmania.DestinationScreen
 import com.devkm.snapmania.LikeAnimation
-import com.devkm.snapmania.NavParam
 import com.devkm.snapmania.SnapManiaViewModel
 import com.devkm.snapmania.UserImageCard
 import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.navigateTo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun FeedScreen(navController: NavController, viewModel: SnapManiaViewModel) {
@@ -93,10 +90,10 @@ fun PostsList(
         LazyColumn {
             items(items = posts) {
                 Post(post = it, currentUserId = currentUserId, viewModel) {
+                    viewModel.setSelectedPost(it)
                     navigateTo(
                         navController,
-                        DestinationScreen.SinglePost,
-                        NavParam("post", it)
+                        DestinationScreen.SinglePost
                     )
                 }
             }
@@ -168,14 +165,14 @@ fun Post(
                 )
 
                 if (likeAnimation.value) {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    LaunchedEffect(key1 = true) {
                         delay(1000L)
                         likeAnimation.value = false
                     }
                     LikeAnimation()
                 }
                 if (dislikeAnimation.value) {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    LaunchedEffect(key1 = true) {
                         delay(1000L)
                         dislikeAnimation.value = false
                     }

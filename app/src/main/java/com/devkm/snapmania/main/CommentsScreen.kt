@@ -44,7 +44,9 @@ fun CommentsScreen(navController: NavController, viewModel: SnapManiaViewModel, 
 
         if (commentsProgress) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -52,7 +54,9 @@ fun CommentsScreen(navController: NavController, viewModel: SnapManiaViewModel, 
             }
         } else if (comments.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -77,9 +81,11 @@ fun CommentsScreen(navController: NavController, viewModel: SnapManiaViewModel, 
                 modifier = Modifier
                     .weight(1f)
                     .border(1.dp, Color.LightGray),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    textColor = Color.Black,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent

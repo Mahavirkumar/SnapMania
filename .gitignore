@@ -13,3 +13,16 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Build output artifacts (APK / AAB — never commit binaries)
+app/release/
+app/debug/
+**/*.apk
+**/*.aab
+**/*.ap_
+
+# Device/machine-specific IDE files
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
+.idea/copilot.data.migration.ask2agent.xml
+.idea/markdown.xml

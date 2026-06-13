@@ -3,6 +3,8 @@ package com.devkm.snapmania
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,7 +17,6 @@ import com.devkm.snapmania.main.FeedScreen
 import com.devkm.snapmania.auth.LoginScreen
 import com.devkm.snapmania.auth.ProfileScreen
 import com.devkm.snapmania.auth.SignUpScreen
-import com.devkm.snapmania.data.PostData
 import com.devkm.snapmania.main.CommentsScreen
 import com.devkm.snapmania.main.MyPostsScreen
 import com.devkm.snapmania.main.NewPostScreen
@@ -28,6 +29,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Opt out of Android 15 forced edge-to-edge — restores original layout behaviour
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             SnapManiaTheme {
                 // A surface container using the 'background' color from the theme
@@ -74,13 +77,12 @@ fun SnapManiaApp() {
 
         }
         composable(DestinationScreen.SinglePost.route) {
-            val postData =
-                navController.previousBackStackEntry
-                    ?.arguments?.getParcelable<PostData>("post")
+            val postData = vm.selectedPost.value
             postData?.let {
                 SinglePostScreen(
                     navController = navController,
-                    viewModel = vm, post = postData
+                    viewModel = vm,
+                    post = it
                 )
             }
         }

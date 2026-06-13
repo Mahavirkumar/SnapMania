@@ -84,9 +84,11 @@ fun NewPostScreen(navController: NavController, viewModel: SnapManiaViewModel, e
                     .height(150.dp),
                 label = { Text(text = "Description") },
                 singleLine = false,
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    textColor = Color.Black
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
                 )
             )
         }

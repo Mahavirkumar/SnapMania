@@ -118,9 +118,12 @@ fun ProfileContent(
             TextField(
                 value = name,
                 onValueChange = onNameChange,
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    textColor = Color.Black
+                textStyle = TextStyle(color = Color.Black),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
                 )
             )
         }
@@ -136,9 +139,11 @@ fun ProfileContent(
                 value = username,
                 onValueChange = onUsernameChange,
                 textStyle = TextStyle(color = Color.Black),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    textColor = Color.Black
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
                 )
             )
         }
@@ -154,9 +159,11 @@ fun ProfileContent(
                 value = bio,
                 onValueChange = onBioChange,
                 textStyle = TextStyle(color = Color.Black),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    textColor = Color.Black
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
                 ),
                 singleLine = false,
                 modifier = Modifier.height(150.dp)

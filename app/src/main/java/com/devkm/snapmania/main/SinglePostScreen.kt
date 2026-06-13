@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.devkm.snapmania.CommonDivider
 import com.devkm.snapmania.CommonImage
 import com.devkm.snapmania.DestinationScreen
@@ -46,7 +46,6 @@ fun SinglePostScreen(navController: NavController, viewModel: SnapManiaViewModel
     LaunchedEffect(key1 = Unit) {
         viewModel.getComments(post.postId)
     }
-
 
     post.userId?.let {
         Column(
@@ -89,7 +88,7 @@ fun SinglePostDisplay(
                     .size(32.dp)
             ) {
                 Image(
-                    painter = rememberImagePainter(data = post.userImage),
+                    painter = rememberAsyncImagePainter(model = post.userImage),
                     contentDescription = null
                 )
             }

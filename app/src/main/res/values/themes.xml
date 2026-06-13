@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.SnapMania" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SnapMania" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Opt out of Android 15 forced edge-to-edge — restores original layout -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
 </resources>

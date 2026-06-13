@@ -1,11 +1,8 @@
 package com.devkm.snapmania
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.devkm.snapmania.data.CommentData
 import com.devkm.snapmania.data.Event
@@ -38,7 +35,6 @@ class SnapManiaViewModel @Inject constructor(
     val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
-
     val refreshPostsProgress = mutableStateOf(false)
     val posts = mutableStateOf<List<PostData>>(listOf())
 
@@ -53,16 +49,19 @@ class SnapManiaViewModel @Inject constructor(
 
     val followers = mutableStateOf(0)
 
+    val selectedPost = mutableStateOf<PostData?>(null)
+
+    fun setSelectedPost(post: PostData) {
+        selectedPost.value = post
+    }
+
     init {
-//        firebaseAuth.signOut()
-        val currentUser =
-            firebaseAuth.currentUser  //help in autologin,and to know user is logined or not
+        val currentUser = firebaseAuth.currentUser
         signedIn.value = currentUser != null
         currentUser?.uid?.let { uid ->
             getUserData(uid)
         }
     }
-
 
     fun onSignup(username: String, email: String, pass: String) {
         if (username.isEmpty() or email.isEmpty() or pass.isEmpty()) {
@@ -70,7 +69,6 @@ class SnapManiaViewModel @Inject constructor(
             return
         }
         inProgress.value = true
-
         firebaseFirestoreDb.collection(USERS).whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.size() > 0) {
@@ -133,7 +131,6 @@ class SnapManiaViewModel @Inject constructor(
             imageUrl = imageUrl ?: userData.value?.imageUrl,
             following = userData.value?.following
         )
-
         uid?.let { uid ->
             inProgress.value = true
             firebaseFirestoreDb.collection(USERS).document(uid).get()
@@ -198,16 +195,23 @@ class SnapManiaViewModel @Inject constructor(
 
     private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
         inProgress.value = true
-
         val storageRef = firebaseStorage.reference
         val uuid = UUID.randomUUID()
         val imageRef = storageRef.child("images/$uuid")
         val uploadTask = imageRef.putFile(uri)
-
         uploadTask
             .addOnSuccessListener {
                 val result = it.metadata?.reference?.downloadUrl
-                result?.addOnSuccessListener(onSuccess)
+                if (result != null) {
+                    result.addOnSuccessListener(onSuccess)
+                        .addOnFailureListener { exc ->
+                            handleException(exc, "Failed to get image URL")
+                            inProgress.value = false
+                        }
+                } else {
+                    handleException(customMessage = "Failed to get image reference")
+                    inProgress.value = false
+                }
             }
             .addOnFailureListener { exc ->
                 handleException(exception = exc)
@@ -237,9 +241,7 @@ class SnapManiaViewModel @Inject constructor(
         val currentUserImage = userData.value?.imageUrl
 
         if (currentUid != null) {
-
             val postUuid = UUID.randomUUID().toString()
-
             val fillerWords = listOf("the", "be", "to", "is", "of", "and", "or", "a", "in", "it")
             val searchTerms = description
                 .split(" ", ".", ",", "?", "!", "#")
@@ -254,7 +256,7 @@ class SnapManiaViewModel @Inject constructor(
                 postImage = imageUri.toString(),
                 postDescription = description,
                 time = System.currentTimeMillis(),
-                likes = listOf<String>(),
+                likes = listOf(),
                 searchTerms = searchTerms
             )
 
@@ -269,14 +271,12 @@ class SnapManiaViewModel @Inject constructor(
                     handleException(exc, "Unable to create post")
                     inProgress.value = false
                 }
-
         } else {
             handleException(customMessage = "Error: username unavailable. Unable to create post")
             onLogout()
             inProgress.value = false
         }
     }
-
 
     private fun refreshPosts() {
         val currentUid = firebaseAuth.currentUser?.uid
@@ -303,8 +303,7 @@ class SnapManiaViewModel @Inject constructor(
             val post = doc.toObject<PostData>()
             newPosts.add(post)
         }
-        val sortedPosts = newPosts.sortedByDescending { it.time }
-        outState.value = sortedPosts
+        outState.value = newPosts.sortedByDescending { it.time }
     }
 
     fun searchPosts(searchTerm: String) {
@@ -325,8 +324,8 @@ class SnapManiaViewModel @Inject constructor(
     }
 
     private fun updatePostUserImageData(imageUrl: String) {
-        val currentuUid = firebaseAuth.currentUser?.uid
-        firebaseFirestoreDb.collection(POSTS).whereEqualTo("userId", currentuUid).get()
+        val currentUid = firebaseAuth.currentUser?.uid
+        firebaseFirestoreDb.collection(POSTS).whereEqualTo("userId", currentUid).get()
             .addOnSuccessListener {
                 val posts = mutableStateOf<List<PostData>>(arrayListOf())
                 convertPosts(it, posts)
@@ -341,10 +340,9 @@ class SnapManiaViewModel @Inject constructor(
                         for (ref in refs) {
                             batch.update(ref, "userImage", imageUrl)
                         }
+                    }.addOnSuccessListener {
+                        refreshPosts()
                     }
-                        .addOnSuccessListener {
-                            refreshPosts()
-                        }
                 }
             }
     }
@@ -392,10 +390,7 @@ class SnapManiaViewModel @Inject constructor(
 
     private fun getGeneralFeed() {
         postsFeedProgress.value = true
-        val currentTime = System.currentTimeMillis()
-        val difference = 24 * 60 * 60 * 1000 // 1 day in millis
         firebaseFirestoreDb.collection(POSTS)
-            .whereGreaterThan("time", currentTime - difference)
             .get()
             .addOnSuccessListener {
                 convertPosts(documents = it, outState = postsFeed)
@@ -407,7 +402,6 @@ class SnapManiaViewModel @Inject constructor(
             }
     }
 
-    //updating like data on backend(firebase)
     fun onLikePost(postData: PostData) {
         firebaseAuth.currentUser?.uid?.let { userId ->
             postData.likes?.let { likes ->
@@ -432,23 +426,26 @@ class SnapManiaViewModel @Inject constructor(
     }
 
     fun createComment(postId: String?, text: String) {
-        userData.value?.userName?.let { username ->
-            val commentId = UUID.randomUUID().toString()
-            val comment = CommentData(
-                commentId = commentId,
-                postId = postId,
-                username = username,
-                text = text,
-                timestamp = System.currentTimeMillis()
-            )
-            firebaseFirestoreDb.collection(COMMENTS).document(commentId).set(comment)
-                .addOnSuccessListener {
-                    getComments(postId)
-                }
-                .addOnFailureListener { exc ->
-                    handleException(exc, "Cannot create comment.")
-                }
-        }
+        val currentUser = userData.value ?: return
+        postId ?: return
+        // Priority: @username → display name → "User" (never show raw userId)
+        val username = currentUser.userName ?: currentUser.name ?: "User"
+
+        val commentId = UUID.randomUUID().toString()
+        val comment = CommentData(
+            commentId = commentId,
+            postId = postId,
+            username = username,
+            text = text,
+            timestamp = System.currentTimeMillis()
+        )
+        firebaseFirestoreDb.collection(COMMENTS).document(commentId).set(comment)
+            .addOnSuccessListener {
+                getComments(postId)
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Cannot create comment.")
+            }
     }
 
     fun getComments(postId: String?) {
@@ -460,8 +457,7 @@ class SnapManiaViewModel @Inject constructor(
                     val comment = doc.toObject<CommentData>()
                     newComments.add(comment)
                 }
-                val sortedComments = newComments.sortedByDescending { it.timestamp }
-                comments.value = sortedComments
+                comments.value = newComments.sortedByDescending { it.timestamp }
                 commentsProgress.value = false
             }
             .addOnFailureListener { exc ->
@@ -471,10 +467,9 @@ class SnapManiaViewModel @Inject constructor(
     }
 
     private fun getFollowers(uid: String?) {
-        firebaseFirestoreDb.collection(USERS).whereArrayContains("following", uid?:"").get()
+        firebaseFirestoreDb.collection(USERS).whereArrayContains("following", uid ?: "").get()
             .addOnSuccessListener { documents ->
                 followers.value = documents.size()
             }
     }
 }
-

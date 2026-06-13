@@ -19,8 +19,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.ImagePainter
-import coil.compose.rememberImagePainter
-import com.devkm.snapmania.data.PostData
-import com.google.firebase.firestore.DocumentReference
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun NotificationMessage(viemodel: SnapManiaViewModel) {
@@ -100,14 +100,14 @@ fun CommonImage(
     modifier: Modifier = Modifier.wrapContentSize(),
     contentScale: ContentScale = ContentScale.Crop
 ) {
-    val painter = rememberImagePainter(data = data) //using coil library for img load
+    val painter = rememberAsyncImagePainter(model = data)
     Image(
         painter = painter,
         contentDescription = null,
         modifier = modifier,
         contentScale = contentScale
     )
-    if (painter.state is ImagePainter.State.Loading) {
+    if (painter.state is AsyncImagePainter.State.Loading) {
         CommonProgressSpinner()
     }
 }
@@ -120,26 +120,34 @@ fun UserImageCard(
         .size(64.dp)
 ) {
     Card(shape = CircleShape, modifier = modifier) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            if (userImage.isNullOrEmpty()) {
+        if (userImage.isNullOrEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.baseline_person_24),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(Color.Gray)
+                    colorFilter = ColorFilter.tint(Color.Gray),
+                    modifier = Modifier.fillMaxSize()
                 )
-            } else {
-                CommonImage(data = userImage)
             }
+        } else {
+            // AsyncImage fills the card bounds completely with Crop scale,
+            // ensuring the profile picture covers the full circle
+            AsyncImage(
+                model = userImage,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
 
 @Composable
 fun CommonDivider() {
-    Divider(
+    HorizontalDivider(
         color = Color.LightGray,
         thickness = 1.dp,
         modifier = Modifier
@@ -156,6 +164,13 @@ private enum class LikeIconSize {
 @Composable
 fun LikeAnimation(like: Boolean = true) {
     var sizeState by remember { mutableStateOf(LikeIconSize.SMALL) }
+
+    // Use LaunchedEffect so the state change happens AFTER the first composition,
+    // allowing the transition to properly animate from SMALL (0dp) → LARGE (150dp)
+    LaunchedEffect(key1 = true) {
+        sizeState = LikeIconSize.LARGE
+    }
+
     val transition = updateTransition(targetState = sizeState, label = "")
     val size by transition.animateDp(
         label = "",
@@ -178,5 +193,4 @@ fun LikeAnimation(like: Boolean = true) {
         modifier = Modifier.size(size = size),
         colorFilter = ColorFilter.tint(if (like) Color.Red else Color.Gray)
     )
-    sizeState = LikeIconSize.LARGE
 }

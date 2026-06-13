@@ -144,10 +144,10 @@ fun MyPostsScreen(navController: NavController, viewModel: SnapManiaViewModel) {
                     .padding(1.dp)
                     .fillMaxSize()
             ) { post ->
+                viewModel.setSelectedPost(post)
                 navigateTo(
                     navController = navController,
-                    DestinationScreen.SinglePost,
-                    NavParam("post", post)
+                    DestinationScreen.SinglePost
                 )
             }
         }

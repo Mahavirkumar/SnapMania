@@ -53,10 +53,10 @@ fun SearchScreen(navController: NavController, vm: SnapManiaViewModel) {
                 .fillMaxWidth()
                 .padding(8.dp)
         ) { post ->
+            vm.setSelectedPost(post)
             navigateTo(
                 navController = navController,
-                dest = DestinationScreen.SinglePost,
-                NavParam("post", post)
+                dest = DestinationScreen.SinglePost
             )
         }
         BottomNavigationMenu(
@@ -91,9 +91,11 @@ fun SearchBar(searchTerm: String, onSearchChange: (String) -> Unit, onSearch: ()
         ),
         maxLines = 1,
         singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
-            textColor = Color.Black,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
