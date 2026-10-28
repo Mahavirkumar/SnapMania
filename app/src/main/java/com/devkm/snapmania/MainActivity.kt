@@ -3,7 +3,10 @@ package com.devkm.snapmania
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.view.WindowCompat
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,12 +32,18 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Opt out of Android 15 forced edge-to-edge — restores original layout behaviour
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        enableEdgeToEdge()
         setContent {
             SnapManiaTheme {
-                // A surface container using the 'background' color from the theme
-                SnapManiaApp()
+                // Android 16 ignores the old edge-to-edge opt-out. Keep taps and
+                // text fields inside the status bar, navigation bar, and keyboard.
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                ) {
+                    SnapManiaApp()
+                }
             }
         }
     }

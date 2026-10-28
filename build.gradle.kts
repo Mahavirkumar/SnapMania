@@ -3,18 +3,16 @@ buildscript {
         google()
         mavenCentral()
     }
-    configurations.all {
-        exclude(group = "gradle", module = "gradle")
-    }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.4")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.48.1")
-        classpath("com.google.gms:google-services:4.4.2")
+        // Built-in Kotlin in AGP 9.2 defaults to 2.2.10. KSP 2.3.x needs Kotlin 2.3.
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
     }
 }
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    // Plugins applied in submodules — versions managed in buildscript above
+    id("com.android.application") version "9.2.1" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.20" apply false
+    id("com.google.devtools.ksp") version "2.3.12" apply false
+    id("com.google.dagger.hilt.android") version "2.59.2" apply false
+    id("com.google.gms.google-services") version "4.5.0" apply false
 }
